@@ -112,7 +112,7 @@ def main():
     results_punto4 = []
 
     # Resultados para el punto 6
-    results_punto6 = {80: [], 85: [], 90: []}
+    results_punto6 = []
 
     for t in inst_types:
         for n in n_inst:
@@ -136,14 +136,15 @@ def main():
                 threshold = np.percentile(distances, percentile)
                 f_lp_threshold, x_lp_threshold, lp_threshold_time = solve_instance_lp(inst, threshold)
 
-                results_punto6[percentile].append({
+                # Contamos las asignaciones no factibles
+                no_factibles = len([1 for i, j in x_lp_threshold if inst.dist_matrix[i][j] > threshold]) if f_lp_threshold != float('inf') else len(distances)  # Si es inf, contamos todos como no factibles
+
+                results_punto6.append({
                     'Instancia': inst_file,
                     'Percentil': percentile,
                     'Threshold': threshold,
-                    'Distancia greedy': f_greedy,
                     'Distancia LP': f_lp_threshold,
-                    'Mejora relativa': (f_greedy - f_lp_threshold) / f_lp_threshold * 100 if f_lp_threshold > 0 else float('inf'),
-                    'Numero de asignaciones no factibles': len([1 for i, j in x_lp_threshold if inst.dist_matrix[i][j] > threshold]),
+                    'Numero de asignaciones no factibles': no_factibles,
                     'Tiempo LP': lp_threshold_time
                 })
 
@@ -152,10 +153,10 @@ def main():
     df_punto4.to_csv('resultados_punto4.csv', index=False)
     print(df_punto4)
 
-    for percentile in percentiles:
-        df_punto6 = pd.DataFrame(results_punto6[percentile])
-        df_punto6.to_csv(f'resultados_punto6_{percentile}.csv', index=False)
-        print(df_punto6)
+    df_punto6 = pd.DataFrame(results_punto6)
+    df_punto6.to_csv('resultados_punto6.csv', index=False)
+    print(df_punto6)
 
 if __name__ == '__main__':
     main()
+
