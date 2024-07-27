@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Cargar los resultados
-df_punto6 = pd.read_csv('/Users/luanagiusto/PycharmProjects/TP Modelos/resultados_punto6.csv')
+df_punto6 = pd.read_csv('/resultados_punto6.csv')
 
 # Revisar la estructura del DataFrame
 print(df_punto6.head())
